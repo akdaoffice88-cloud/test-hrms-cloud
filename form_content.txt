@@ -1,0 +1,1001 @@
+1402:            /* Main Applicant Form - Multi-step form for data entry */
+1403-            <>
+1404-              <div className="mb-12">
+1405-                <div className="flex items-center gap-3 mb-3">
+1406-                  <div className="px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-widest">
+1407-                    Recruitment Management
+1408-                  </div>
+1409-                </div>
+1410-                <h2 className="text-4xl font-black text-white tracking-tight leading-tight">
+1411-                  Candidate <span className="gradient-text">Registration</span>
+1412-                </h2>
+1413-                <p className="text-slate-400 mt-2 font-medium">Please provide the candidate's professional and personal details.</p>
+1414-              </div>
+1415-
+1416-              {/* Stepper Component - Shows progress through the form steps */}
+1417-              <div className="mb-12 relative px-4">
+1418-                <div className="absolute top-1/2 left-0 w-full h-1 bg-slate-100 -translate-y-1/2 z-0 rounded-full"></div>
+1419-                <div 
+1420-                  className="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-indigo-600 to-cyan-500 -translate-y-1/2 z-0 rounded-full transition-all duration-700"
+1421-                  style={{ width: `${(currentStep / (STEPS.length - 1)) * 100}%` }}
+1422-                ></div>
+1423-                <div className="relative z-10 flex justify-between">
+1424-                  {STEPS.map((step, index) => {
+1425-                    const Icon = step.icon;
+1426-                    const isActive = index === currentStep;
+1427-                    const isCompleted = index < currentStep;
+1428-                    
+1429-                    return (
+1430-                      <div key={step.id} className="step-indicator">
+1431-                        <div 
+1432-                          className={`step-circle ${
+1433-                            isActive ? 'bg-indigo-600 text-white ring-8 ring-indigo-500/10 scale-110' : 
+1434-                            isCompleted ? 'bg-emerald-500 text-white' : 'bg-white text-slate-300 border-2 border-slate-100'
+1435-                          }`}
+1436-                        >
+1437-                          {isCompleted ? <CheckCircle2 className="w-7 h-7" /> : <Icon className="w-6 h-6" />}
+1438-                        </div>
+1439-                        <span className={`mt-4 text-[10px] font-black uppercase tracking-[0.2em] hidden sm:block ${
+1440-                          isActive ? 'text-indigo-600' : 'text-slate-400'
+1441-                        }`}>
+1442-                          {step.title}
+1443-                        </span>
+1444-                      </div>
+1445-                    );
+1446-                  })}
+1447-                </div>
+1448-              </div>
+1449-
+1450-              {/* Form */}
+1451-              <form onSubmit={handleSubmit} className="glass-card overflow-hidden">
+1452-                <div className="p-8 sm:p-12">
+1453-                  {formMessage.text && (
+1454-                    <div className={`mb-8 p-4 rounded-xl flex items-center gap-3 ${
+1455-                      formMessage.type === 'error' ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+1456-                    }`}>
+1457-                      {formMessage.type === 'error' ? <AlertCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
+1458-                      <p className="text-sm font-bold">{formMessage.text}</p>
+1459-                    </div>
+1460-                  )}
+1461-                  <AnimatePresence mode="wait">
+1462-                    {currentStep === 0 && (
+1463-                      <motion.div
+1464-                        key="step0"
+1465-                        initial={{ opacity: 0, y: 10 }}
+1466-                        animate={{ opacity: 1, y: 0 }}
+1467-                        exit={{ opacity: 0, y: -10 }}
+1468-                        className="space-y-8"
+1469-                      >
+1470-                        <h3 className="section-title"><User className="w-6 h-6 text-indigo-600" /> Personal Identity</h3>
+1471-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+1472-                          <div>
+1473-                            <label className="label-text">Full Legal Name</label>
+1474-                            <input 
+1475-                              type="text" name="fullName" value={formData.fullName} onChange={handleInputChange}
+1476-                              required className="input-field" placeholder="e.g. John Doe"
+1477-                            />
+1478-                          </div>
+1479-                          <div>
+1480-                            <label className="label-text">Gender Identity</label>
+1481-                            <select 
+1482-                              name="gender" value={formData.gender} onChange={handleInputChange}
+1483-                              required className="input-field"
+1484-                            >
+1485-                              <option value="">Select Gender</option>
+1486-                              <option value="Male">Male</option>
+1487-                              <option value="Female">Female</option>
+1488-                              <option value="Other">Other</option>
+1489-                            </select>
+1490-                          </div>
+1491-                          <div>
+1492-                            <label className="label-text">Date of Birth</label>
+1493-                            <div className="relative">
+1494-                              {!formData.dob && <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />}
+1495-                              <input 
+1496-                                type="date" name="dob" value={formData.dob} onChange={handleInputChange}
+1497-                                required className={`input-field ${!formData.dob ? 'pl-16' : 'pl-5'}`}
+1498-                              />
+1499-                            </div>
+1500-                          </div>
+1501-                          <div>
+1502-                            <label className="label-text">Marital Status</label>
+1503-                            <select 
+1504-                              name="maritalStatus" value={formData.maritalStatus} onChange={handleInputChange}
+1505-                              required className="input-field"
+1506-                            >
+1507-                              <option value="">Select Status</option>
+1508-                              <option value="Single">Single</option>
+1509-                              <option value="Married">Married</option>
+1510-                              <option value="Divorced">Divorced</option>
+1511-                              <option value="Widowed">Widowed</option>
+1512-                            </select>
+1513-                          </div>
+1514-                          <div>
+1515-                            <label className="label-text">Blood Group</label>
+1516-                            <select 
+1517-                              name="bloodGroup" value={formData.bloodGroup} onChange={handleInputChange}
+1518-                              required className="input-field"
+1519-                            >
+1520-                              <option value="">Select Blood Group</option>
+1521-                              <optgroup label="Common Types">
+1522-                                <option value="A+">A+</option>
+1523-                                <option value="A-">A-</option>
+1524-                                <option value="A1+">A1+</option>
+1525-                                <option value="A1-">A1-</option>
+1526-                                <option value="B+">B+</option>
+1527-                                <option value="B-">B-</option>
+1528-                                <option value="O+">O+</option>
+1529-                                <option value="O-">O-</option>
+1530-                                <option value="AB+">AB+</option>
+1531-                                <option value="AB-">AB-</option>
+1532-                              </optgroup>
+1533-                              <optgroup label="Rare Types">
+1534-                                <option value="Rh-null">Rh-null (Golden Blood)</option>
+1535-                                <option value="Bombay Blood Group">Bombay Blood Group (hh)</option>
+1536-                                <option value="Lutheran">Lutheran (Lu(a-b-))</option>
+1537-                                <option value="Duffy-negative">Duffy-negative</option>
+1538-                                <option value="Kidd-negative">Kidd-negative</option>
+1539-                                <option value="Vel-negative">Vel-negative</option>
+1540-                                <option value="Colton-negative">Colton-negative</option>
+1541-                                <option value="Kell-negative">Kell-negative</option>
+1542-                                <option value="McLeod Syndrome">McLeod Syndrome</option>
+1543-                                <option value="P Null">P Null phenotype</option>
+1544-                              </optgroup>
+1545-                            </select>
+1546-                          </div>
+1547-                        </div>
+1548-                      </motion.div>
+1549-                    )}
+1550-
+1551-                    {currentStep === 1 && (
+1552-                      <motion.div
+1553-                        key="step1"
+1554-                        initial={{ opacity: 0, y: 10 }}
+1555-                        animate={{ opacity: 1, y: 0 }}
+1556-                        exit={{ opacity: 0, y: -10 }}
+1557-                        className="space-y-8"
+1558-                      >
+1559-                        <h3 className="section-title"><UsersIcon className="w-6 h-6 text-indigo-600" /> Family Ecosystem</h3>
+1560-                        
+1561-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+1562-                          <div className="sm:col-span-2">
+1563-                            <h4 className="text-sm font-black text-indigo-400 uppercase tracking-widest mb-4">Parents Details</h4>
+1564-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-6 bg-white/5 rounded-3xl border border-white/5">
+1565-                              <div>
+1566-                                <label className="label-text">Father's Name</label>
+1567-                                <input 
+1568-                                  type="text" name="fatherName" value={formData.fatherName} onChange={handleInputChange}
+1569-                                  required className="input-field" placeholder="Father's Name"
+1570-                                />
+1571-                              </div>
+1572-                              <div>
+1573-                                <label className="label-text">Father's Mobile</label>
+1574-                                <input 
+1575-                                  type="tel" name="fatherMobile" value={formData.fatherMobile} onChange={handleInputChange}
+1576-                                  required className="input-field" placeholder="Mobile Number"
+1577-                                />
+1578-                              </div>
+1579-                              <div>
+1580-                                <label className="label-text">Father's Education</label>
+1581-                                <input 
+1582-                                  type="text" name="fatherEducation" value={formData.fatherEducation} onChange={handleInputChange}
+1583-                                  required className="input-field" placeholder="Education"
+1584-                                />
+1585-                              </div>
+1586-                              <div>
+1587-                                <label className="label-text">Father's Salary (Monthly)</label>
+1588-                                <input 
+1589-                                  type="text" name="fatherSalary" value={formData.fatherSalary} onChange={handleInputChange}
+1590-                                  required className="input-field" placeholder="Salary"
+1591-                                />
+1592-                              </div>
+1593-                              <div className="sm:col-span-2">
+1594-                                <label className="label-text">Father's Employment</label>
+1595-                                <select 
+1596-                                  name="fatherEmployment" value={formData.fatherEmployment} onChange={handleInputChange}
+1597-                                  required className="input-field"
+1598-                                >
+1599-                                  <option value="">Select Employment Status</option>
+1600-                                  <option value="Employed">Employed</option>
+1601-                                  <option value="Unemployed">Unemployed</option>
+1602-                                </select>
+1603-                              </div>
+1604-                              <div className="sm:col-span-2 h-px bg-white/5 my-2"></div>
+1605-                              <div>
+1606-                                <label className="label-text">Mother's Name</label>
+1607-                                <input 
+1608-                                  type="text" name="motherName" value={formData.motherName} onChange={handleInputChange}
+1609-                                  required className="input-field" placeholder="Mother's Name"
+1610-                                />
+1611-                              </div>
+1612-                              <div>
+1613-                                <label className="label-text">Mother's Mobile</label>
+1614-                                <input 
+1615-                                  type="tel" name="motherMobile" value={formData.motherMobile} onChange={handleInputChange}
+1616-                                  required className="input-field" placeholder="Mobile Number"
+1617-                                />
+1618-                              </div>
+1619-                              <div>
+1620-                                <label className="label-text">Mother's Education</label>
+1621-                                <input 
+1622-                                  type="text" name="motherEducation" value={formData.motherEducation} onChange={handleInputChange}
+1623-                                  required className="input-field" placeholder="Education"
+1624-                                />
+1625-                              </div>
+1626-                              <div>
+1627-                                <label className="label-text">Mother's Salary (Monthly)</label>
+1628-                                <input 
+1629-                                  type="text" name="motherSalary" value={formData.motherSalary} onChange={handleInputChange}
+1630-                                  required className="input-field" placeholder="Salary"
+1631-                                />
+1632-                              </div>
+1633-                              <div className="sm:col-span-2">
+1634-                                <label className="label-text">Mother's Employment</label>
+1635-                                <select 
+1636-                                  name="motherEmployment" value={formData.motherEmployment} onChange={handleInputChange}
+1637-                                  required className="input-field"
+1638-                                >
+1639-                                  <option value="">Select Employment Status</option>
+1640-                                  <option value="Employed">Employed</option>
+1641-                                  <option value="Unemployed">Unemployed</option>
+1642-                                </select>
+1643-                              </div>
+1644-                            </div>
+1645-                          </div>
+1646-
+1647-                          {formData.maritalStatus === 'Married' && (
+1648-                            <div className="sm:col-span-2">
+1649-                              <h4 className="text-sm font-black text-indigo-400 uppercase tracking-widest mb-4">Spouse Details</h4>
+1650-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-6 bg-white/5 rounded-3xl border border-white/5">
+1651-                                <div>
+1652-                                  <label className="label-text">Spouse Name</label>
+1653-                                  <input 
+1654-                                    type="text" name="spouseName" value={formData.spouseName} onChange={handleInputChange}
+1655-                                    required className="input-field" placeholder="Spouse Name"
+1656-                                  />
+1657-                                </div>
+1658-                                <div>
+1659-                                  <label className="label-text">Spouse Mobile</label>
+1660-                                  <input 
+1661-                                    type="tel" name="spouseMobile" value={formData.spouseMobile} onChange={handleInputChange}
+1662-                                    required className="input-field" placeholder="Mobile Number"
+1663-                                  />
+1664-                                </div>
+1665-                                <div>
+1666-                                  <label className="label-text">Spouse Education</label>
+1667-                                  <input 
+1668-                                    type="text" name="spouseEducation" value={formData.spouseEducation} onChange={handleInputChange}
+1669-                                    required className="input-field" placeholder="Education"
+1670-                                  />
+1671-                                </div>
+1672-                                <div>
+1673-                                  <label className="label-text">Spouse Salary (Monthly)</label>
+1674-                                  <input 
+1675-                                    type="text" name="spouseSalary" value={formData.spouseSalary} onChange={handleInputChange}
+1676-                                    required className="input-field" placeholder="Salary"
+1677-                                  />
+1678-                                </div>
+1679-                                <div className="sm:col-span-2">
+1680-                                  <label className="label-text">Spouse Employment</label>
+1681-                                  <select 
+1682-                                    name="spouseEmployment" value={formData.spouseEmployment} onChange={handleInputChange}
+1683-                                    required className="input-field"
+1684-                                  >
+1685-                                    <option value="">Select Employment Status</option>
+1686-                                    <option value="Employed">Employed</option>
+1687-                                    <option value="Unemployed">Unemployed</option>
+1688-                                  </select>
+1689-                                </div>
+1690-                              </div>
+1691-                            </div>
+1692-                          )}
+1693-                        </div>
+1694-                        
+1695-                        {/* Kids Details */}
+1696-                        {['Married', 'Divorced', 'Widowed'].includes(formData.maritalStatus) && (
+1697-                          <div className="space-y-6 pt-6 border-t border-white/5">
+1698-                            <div className="flex items-center justify-between">
+1699-                              <h4 className="text-sm font-black text-indigo-400 uppercase tracking-widest">Children Details</h4>
+1700-                              <div className="flex items-center gap-3">
+1701-                                <label className="text-xs font-bold text-slate-500">No. of Kids:</label>
+1702-                                <input 
+1703-                                  type="number" min="0" 
+1704-                                  value={formData.numberOfKids} 
+1705-                                  onChange={(e) => updateKidsCount(parseInt(e.target.value) || 0)}
+1706-                                  className="w-16 px-2 py-1 bg-slate-800 border border-slate-700 rounded-lg text-white text-center font-bold"
+1707-                                />
+1708-                              </div>
+1709-                            </div>
+1710-                            <div className="grid grid-cols-1 gap-4">
+1711-                              {formData.kidsDetails.map((kid, idx) => (
+1712-                                <div key={idx} className="p-4 bg-white/5 rounded-2xl border border-white/5 grid grid-cols-1 sm:grid-cols-3 gap-4">
+1713-                                  <div>
+1714-                                    <label className="label-text text-[10px]">Kid {idx + 1} Name</label>
+1715-                                    <input 
+1716-                                      type="text" value={kid.name} 
+1717-                                      onChange={(e) => handleKidChange(idx, 'name', e.target.value)}
+1718-                                      className="input-field py-2 text-sm" placeholder="Name"
+1719-                                    />
+1720-                                  </div>
+1721-                                  <div>
+1722-                                    <label className="label-text text-[10px]">Age</label>
+1723-                                    <input 
+1724-                                      type="text" value={kid.age} 
+1725-                                      onChange={(e) => handleKidChange(idx, 'age', e.target.value)}
+1726-                                      className="input-field py-2 text-sm" placeholder="Age"
+1727-                                    />
+1728-                                  </div>
+1729-                                  <div>
+1730-                                    <label className="label-text text-[10px]">Education</label>
+1731-                                    <input 
+1732-                                      type="text" value={kid.education} 
+1733-                                      onChange={(e) => handleKidChange(idx, 'education', e.target.value)}
+1734-                                      className="input-field py-2 text-sm" placeholder="School/College"
+1735-                                    />
+1736-                                  </div>
+1737-                                </div>
+1738-                              ))}
+1739-                            </div>
+1740-                          </div>
+1741-                        )}
+1742-
+1743-                        {/* Sibling Details */}
+1744-                        <div className="space-y-6 pt-6 border-t border-white/5">
+1745-                          <div className="flex items-center justify-between">
+1746-                            <h4 className="text-sm font-black text-indigo-400 uppercase tracking-widest">Siblings Details</h4>
+1747-                            <div className="flex items-center gap-3">
+1748-                              <label className="text-xs font-bold text-slate-500">No. of Siblings:</label>
+1749-                              <input 
+1750-                                type="number" min="0" 
+1751-                                value={formData.numberOfSiblings} 
+1752-                                onChange={(e) => updateSiblingsCount(parseInt(e.target.value) || 0)}
+1753-                                className="w-16 px-2 py-1 bg-slate-800 border border-slate-700 rounded-lg text-white text-center font-bold"
+1754-                              />
+1755-                            </div>
+1756-                          </div>
+1757-                          
+1758-                          <div className="grid grid-cols-1 gap-6">
+1759-                            {formData.siblingsDetails.map((sib, idx) => (
+1760-                              <div key={idx} className="p-6 bg-white/5 rounded-3xl border border-white/5 space-y-4">
+1761-                                <div className="flex items-center justify-between mb-2">
+1762-                                  <span className="px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-widest">Sibling {idx + 1}</span>
+1763-                                </div>
+1764-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+1765-                                  <div>
+1766-                                    <label className="label-text text-[10px]">Full Name</label>
+1767-                                    <input 
+1768-                                      type="text" value={sib.name} 
+1769-                                      onChange={(e) => handleSiblingChange(idx, 'name', e.target.value)}
+1770-                                      className="input-field py-2 text-sm" placeholder="Name"
+1771-                                    />
+1772-                                  </div>
+1773-                                  <div>
+1774-                                    <label className="label-text text-[10px]">Age</label>
+1775-                                    <input 
+1776-                                      type="text" value={sib.age} 
+1777-                                      onChange={(e) => handleSiblingChange(idx, 'age', e.target.value)}
+1778-                                      className="input-field py-2 text-sm" placeholder="Age"
+1779-                                    />
+1780-                                  </div>
+1781-                                  <div>
+1782-                                    <label className="label-text text-[10px]">Gender</label>
+1783-                                    <select 
+1784-                                      value={sib.gender} 
+1785-                                      onChange={(e) => handleSiblingChange(idx, 'gender', e.target.value)}
+1786-                                      className="input-field py-2 text-sm"
+1787-                                    >
+1788-                                      <option value="">Select Gender</option>
+1789-                                      <option value="Male">Male</option>
+1790-                                      <option value="Female">Female</option>
+1791-                                      <option value="Other">Other</option>
+1792-                                    </select>
+1793-                                  </div>
+1794-                                  <div>
+1795-                                    <label className="label-text text-[10px]">Education</label>
+1796-                                    <input 
+1797-                                      type="text" value={sib.education} 
+1798-                                      onChange={(e) => handleSiblingChange(idx, 'education', e.target.value)}
+1799-                                      className="input-field py-2 text-sm" placeholder="e.g. B.E Computer Science"
+1800-                                    />
+1801-                                  </div>
+1802-                                  <div className="sm:col-span-2">
+1803-                                    <label className="label-text text-[10px]">Current Location</label>
+1804-                                    <input 
+1805-                                      type="text" value={sib.location} 
+1806-                                      onChange={(e) => handleSiblingChange(idx, 'location', e.target.value)}
+1807-                                      className="input-field py-2 text-sm" placeholder="City"
+1808-                                    />
+1809-                                  </div>
+1810-                                </div>
+1811-                              </div>
+1812-                            ))}
+1813-                          </div>
+1814-                        </div>
+1815-                      </motion.div>
+1816-                    )}
+1817-
+1818-                    {currentStep === 2 && (
+1819-                      <motion.div
+1820-                        key="step1"
+1821-                        initial={{ opacity: 0, y: 10 }}
+1822-                        animate={{ opacity: 1, y: 0 }}
+1823-                        exit={{ opacity: 0, y: -10 }}
+1824-                        className="space-y-8"
+1825-                      >
+1826-                        <h3 className="section-title"><MapPin className="w-6 h-6 text-indigo-600" /> Communication Hub</h3>
+1827-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+1828-                          <div>
+1829-                            <label className="label-text">Mobile Number</label>
+1830-                            <div className="relative">
+1831-                              {!formData.mobileNumber && <Phone className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />}
+1832-                              <input 
+1833-                                type="tel" name="mobileNumber" value={formData.mobileNumber} onChange={handleInputChange}
+1834-                                required className={`input-field ${!formData.mobileNumber ? 'pl-16' : 'pl-5'} ${mobileError ? 'border-rose-500 bg-rose-500/5' : ''}`} placeholder="+91 98765 43210"
+1835-                                maxLength={10}
+1836-                              />
+1837-                            </div>
+1838-                            {mobileError && (
+1839-                              <p className="mt-2 text-xs font-bold text-rose-500 flex items-center gap-1">
+1840-                                <AlertCircle className="w-3 h-3" /> {mobileError}
+1841-                              </p>
+1842-                            )}
+1843-                          </div>
+1844-                          <div>
+1845-                            <label className="label-text">Primary Email</label>
+1846-                            <div className="relative">
+1847-                              {!formData.emailId && <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />}
+1848-                              <input 
+1849-                                type="email" name="emailId" value={formData.emailId} onChange={handleInputChange}
+1850-                                required className={`input-field ${!formData.emailId ? 'pl-16' : 'pl-5'}`} placeholder="john@example.com"
+1851-                              />
+1852-                            </div>
+1853-                          </div>
+1854-                          <div className="sm:col-span-2">
+1855-                            <label className="label-text">Permanent Address</label>
+1856-                            <textarea 
+1857-                              name="permanentAddress" value={formData.permanentAddress} onChange={handleInputChange}
+1858-                              required className="input-field min-h-[120px] resize-none" placeholder="Full address with landmarks..."
+1859-                            />
+1860-                          </div>
+1861-                          <div>
+1862-                            <label className="label-text">City</label>
+1863-                            <input 
+1864-                              type="text" name="city" value={formData.city} onChange={handleInputChange}
+1865-                              required className="input-field" placeholder="e.g. Chennai"
+1866-                            />
+1867-                          </div>
+1868-                          <div>
+1869-                            <label className="label-text">Pincode</label>
+1870-                            <input 
+1871-                              type="text" name="pincode" value={formData.pincode} onChange={handleInputChange}
+1872-                              required className="input-field" placeholder="600001"
+1873-                            />
+1874-                          </div>
+1875-                        </div>
+1876-
+1877-                        <div className="pt-8 border-t border-white/5">
+1878-                          <div className="flex items-center gap-5 mb-6">
+1879-                            <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center">
+1880-                              <AlertCircle className="w-5 h-5 text-amber-500" />
+1881-                            </div>
+1882-                            <h4 className="text-lg font-extrabold text-white">Emergency Contact</h4>
+1883-                          </div>
+1884-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+1885-                            <div>
+1886-                              <label className="label-text">Contact Person Name</label>
+1887-                              <input 
+1888-                                type="text" name="emergencyContactName" value={formData.emergencyContactName} onChange={handleInputChange}
+1889-                                required className="input-field" placeholder="Relative or Friend"
+1890-                              />
+1891-                            </div>
+1892-                            <div>
+1893-                              <label className="label-text">Emergency Phone</label>
+1894-                              <input 
+1895-                                type="tel" name="emergencyContactNumber" value={formData.emergencyContactNumber} onChange={handleInputChange}
+1896-                                required className="input-field" placeholder="Active mobile number"
+1897-                              />
+1898-                            </div>
+1899-                          </div>
+1900-                        </div>
+1901-                      </motion.div>
+1902-                    )}
+1903-
+1904-                    {currentStep === 3 && (
+1905-                      <motion.div
+1906-                        key="step3"
+1907-                        initial={{ opacity: 0, y: 10 }}
+1908-                        animate={{ opacity: 1, y: 0 }}
+1909-                        exit={{ opacity: 0, y: -10 }}
+1910-                        className="space-y-8"
+1911-                      >
+1912-                        <h3 className="section-title"><ShieldCheck className="w-6 h-6 text-indigo-600" /> Statutory Compliance</h3>
+1913-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+1914-                          <div>
+1915-                            <label className="label-text">Aadhaar Number</label>
+1916-                            <input 
+1917-                              type="text" name="aadhaarNumber" value={formData.aadhaarNumber} onChange={handleInputChange}
+1918-                              required className={`input-field font-mono tracking-widest ${aadhaarError ? 'border-rose-500 bg-rose-500/5' : ''}`} placeholder="XXXX XXXX XXXX"
+1919-                            />
+1920-                            {aadhaarError && (
+1921-                              <p className="mt-2 text-xs font-bold text-rose-500 flex items-center gap-1">
+1922-                                <AlertCircle className="w-3 h-3" /> {aadhaarError}
+1923-                              </p>
+1924-                            )}
+1925-                          </div>
+1926-                          <div>
+1927-                            <label className="label-text">PAN Card Number</label>
+1928-                            <input 
+1929-                              type="text" name="panNumber" value={formData.panNumber} onChange={handleInputChange}
+1930-                              required className="input-field font-mono uppercase tracking-widest" placeholder="ABCDE1234F"
+1931-                            />
+1932-                          </div>
+1933-                          <div className="sm:col-span-2">
+1934-                            <label className="label-text">Driving Licence Number</label>
+1935-                            <div className="relative">
+1936-                              {!formData.drivingLicenceNumber && <Car className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />}
+1937-                              <input 
+1938-                                type="text" name="drivingLicenceNumber" value={formData.drivingLicenceNumber} onChange={handleInputChange}
+1939-                                required className={`input-field ${!formData.drivingLicenceNumber ? 'pl-16' : 'pl-5'} font-mono uppercase`} placeholder="TN XX XXXX XXXXXXX"
+1940-                              />
+1941-                            </div>
+1942-                          </div>
+1943-                        </div>
+1944-                        
+1945-                        <div className="p-6 bg-indigo-50/50 border border-indigo-100 rounded-3xl flex gap-5">
+1946-                          <div className="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center shrink-0">
+1947-                            <BadgeCheck className="w-6 h-6 text-indigo-600" />
+1948-                          </div>
+1949-                          <div>
+1950-                            <p className="text-base font-extrabold text-indigo-900">Enterprise Security Standard</p>
+1951-                            <p className="text-sm text-indigo-700/80 mt-1 font-medium leading-relaxed">
+1952-                              All identity data is processed through our secure vault. We comply with GDPR and local data protection laws.
+1953-                            </p>
+1954-                          </div>
+1955-                        </div>
+1956-                      </motion.div>
+1957-                    )}
+1958-
+1959-                    {currentStep === 4 && (
+1960-                      <motion.div
+1961-                        key="step4"
+1962-                        initial={{ opacity: 0, y: 10 }}
+1963-                        animate={{ opacity: 1, y: 0 }}
+1964-                        exit={{ opacity: 0, y: -10 }}
+1965-                        className="space-y-8"
+1966-                      >
+1967-                        <h3 className="section-title"><Briefcase className="w-6 h-6 text-indigo-600" /> Professional Trajectory</h3>
+1968-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+1969-                          <div>
+1970-                            <label className="label-text">Experience Level</label>
+1971-                            <select 
+1972-                              name="experienceType" value={formData.experienceType} onChange={handleInputChange}
+1973-                              required className="input-field"
+1974-                            >
+1975-                              <option value="">Select Level</option>
+1976-                              <option value="Fresher">Fresher</option>
+1977-                              <option value="Experience">Experienced Professional</option>
+1978-                            </select>
+1979-                          </div>
+1980-                          <div>
+1981-                            <label className="label-text">Degree Type</label>
+1982-                            <select 
+1983-                              name="degreeType" value={formData.degreeType} onChange={handleInputChange}
+1984-                              required className="input-field"
+1985-                            >
+1986-                              <option value="">Select Degree</option>
+1987-                              <option value="Bachelors">Bachelors</option>
+1988-                              <option value="Masters">Masters</option>
+1989-                              <option value="Doctorate">Doctorate</option>
+1990-                              <option value="Diploma">Diploma</option>
+1991-                              <option value="Other">Other</option>
+1992-                            </select>
+1993-                          </div>
+1994-                          <div>
+1995-                            <label className="label-text">Position Applied For</label>
+1996-                            <input 
+1997-                              type="text" name="positionApplied" value={formData.positionApplied} onChange={handleInputChange}
+1998-                              required className="input-field" placeholder="e.g. Software Engineer"
+1999-                            />
+2000-                          </div>
+2001-                          <div>
+2002-                            <label className="label-text">Branch Location</label>
+2003-                            <input 
+2004-                              type="text" name="branch" value={formData.branch} onChange={handleInputChange}
+2005-                              required className="input-field" placeholder="e.g. Main Branch"
+2006-                            />
+2007-                          </div>
+2008-                          <div>
+2009-                            <label className="label-text">District / Location</label>
+2010-                            <input 
+2011-                              type="text" name="district" value={formData.district} onChange={handleInputChange}
+2012-                              required className="input-field" placeholder="e.g. Chennai"
+2013-                            />
+2014-                          </div>
+2015-                          <div className="sm:col-span-2">
+2016-                            <label className="label-text">Institute/College Name</label>
+2017-                            <input 
+2018-                              type="text" name="instituteName" value={formData.instituteName} onChange={handleInputChange}
+2019-                              required className="input-field" placeholder="Enter College/University Name"
+2020-                            />
+2021-                          </div>
+2022-
+2023-                          {formData.experienceType === 'Fresher' && (
+2024-                            <>
+2025-                              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
+2026-                                <label className="label-text">Education Details (Degree/Course)</label>
+2027-                                <input 
+2028-                                  type="text" name="educationDetails" value={formData.educationDetails} onChange={handleInputChange}
+2029-                                  required className="input-field" placeholder="e.g. B.E Computer Science"
+2030-                                />
+2031-                              </motion.div>
+2032-                              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
+2033-                                <label className="label-text">Passed Out Year</label>
+2034-                                <input 
+2035-                                  type="text" name="passedOutYear" value={formData.passedOutYear} onChange={handleInputChange}
+2036-                                  required className="input-field" placeholder="e.g. 2023"
+2037-                                />
+2038-                              </motion.div>
+2039-                            </>
+2040-                          )}
+2041-
+2042-                          {formData.experienceType === 'Experience' && (
+2043-                            <div className="sm:col-span-2 space-y-8">
+2044-                              <div className="flex items-center justify-between">
+2045-                                <label className="label-text">Number of Previous Companies</label>
+2046-                                <input 
+2047-                                  type="number" min="0" 
+2048-                                  value={formData.numberOfCompanies} 
+2049-                                  onChange={(e) => updateExperienceCount(parseInt(e.target.value) || 0)}
+2050-                                  className="w-20 px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-center font-bold"
+2051-                                />
+2052-                              </div>
+2053-
+2054-                              <div className="grid grid-cols-1 gap-6">
+2055-                                {formData.experienceDetails.map((exp, idx) => (
+2056-                                  <div key={idx} className="p-6 bg-white/5 rounded-3xl border border-white/5 space-y-4">
+2057-                                    <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Company {idx + 1}</p>
+2058-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+2059-                                      <div>
+2060-                                        <label className="label-text text-[10px]">Company Name</label>
+2061-                                        <input 
+2062-                                          type="text" value={exp.companyName} 
+2063-                                          onChange={(e) => handleExperienceChange(idx, 'companyName', e.target.value)}
+2064-                                          className="input-field py-2 text-sm" placeholder="Company Name"
+2065-                                        />
+2066-                                      </div>
+2067-                                      <div>
+2068-                                        <label className="label-text text-[10px]">Role/Designation</label>
+2069-                                        <input 
+2070-                                          type="text" value={exp.role} 
+2071-                                          onChange={(e) => handleExperienceChange(idx, 'role', e.target.value)}
+2072-                                          className="input-field py-2 text-sm" placeholder="Role"
+2073-                                        />
+2074-                                      </div>
+2075-                                      <div>
+2076-                                        <label className="label-text text-[10px]">Salary (LPA)</label>
+2077-                                        <input 
+2078-                                          type="text" value={exp.salary} 
+2079-                                          onChange={(e) => handleExperienceChange(idx, 'salary', e.target.value)}
+2080-                                          className="input-field py-2 text-sm" placeholder="Salary"
+2081-                                        />
+2082-                                      </div>
+2083-                                      <div>
+2084-                                        <label className="label-text text-[10px]">Years of Work (e.g. 2020-2022)</label>
+2085-                                        <input 
+2086-                                          type="text" value={exp.yearsOfWork} 
+2087-                                          onChange={(e) => handleExperienceChange(idx, 'yearsOfWork', e.target.value)}
+2088-                                          className="input-field py-2 text-sm" placeholder="Years"
+2089-                                        />
+2090-                                      </div>
+2091-                                    </div>
+2092-                                  </div>
+2093-                                ))}
+2094-                              </div>
+2095-
+2096-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4 border-t border-white/5">
+2097-                                <div>
+2098-                                  <label className="label-text">Current Annual CTC (LPA)</label>
+2099-                                  <input 
+2100-                                    type="text" name="currentSalary" value={formData.currentSalary} onChange={handleInputChange}
+2101-                                    required className="input-field" placeholder="e.g. 12.5"
+2102-                                  />
+2103-                                </div>
+2104-                                <div>
+2105-                                  <label className="label-text">Expected Annual CTC (LPA)</label>
+2106-                                  <input 
+2107-                                    type="text" name="expectedSalary" value={formData.expectedSalary} onChange={handleInputChange}
+2108-                                    required className="input-field" placeholder="e.g. 15.0"
+2109-                                  />
+2110-                                </div>
+2111-                              </div>
+2112-                            </div>
+2113-                          )}
+2114-
+2115-                          {formData.experienceType === 'Fresher' && (
+2116-                            <div>
+2117-                              <label className="label-text">Expected Annual CTC (LPA)</label>
+2118-                              <input 
+2119-                                type="text" name="expectedSalary" value={formData.expectedSalary} onChange={handleInputChange}
+2120-                                required className="input-field" placeholder="e.g. 15.0"
+2121-                              />
+2122-                            </div>
+2123-                          )}
+2124-
+2125-                          <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
+2126-                            <div>
+2127-                              <label className="label-text">Application Source</label>
+2128-                              <select 
+2129-                                name="sourceOfApplication" value={formData.sourceOfApplication} onChange={handleInputChange}
+2130-                                required className="input-field"
+2131-                              >
+2132-                                <option value="">Select Source</option>
+2133-                                <option value="LinkedIn">LinkedIn</option>
+2134-                                <option value="Indeed">Indeed</option>
+2135-                                <option value="Company Website">Company Website</option>
+2136-                                <option value="Referral">Employee Referral</option>
+2137-                                <option value="Walk-in">Direct Walk-in</option>
+2138-                                <option value="Other">Other Channels</option>
+2139-                              </select>
+2140-                            </div>
+2141-                            <div>
+2142-                              <label className="label-text">Source Remarks</label>
+2143-                              <input 
+2144-                                type="text" name="sourceRemark" value={formData.sourceRemark} onChange={handleInputChange}
+2145-                                className="input-field" placeholder="Additional details"
+2146-                              />
+2147-                            </div>
+2148-                          </div>
+2149-
+2150-                          {formData.sourceOfApplication === 'Referral' && (
+2151-                            <motion.div 
+2152-                              initial={{ opacity: 0, height: 0 }}
+2153-                              animate={{ opacity: 1, height: 'auto' }}
+2154-                              className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6 p-6 bg-white/5 rounded-3xl border border-white/5"
+2155-                            >
+2156-                              <div>
+2157-                                <label className="label-text">Referer Name</label>
+2158-                                <input 
+2159-                                  type="text" name="refererName" value={formData.refererName} onChange={handleInputChange}
+2160-                                  className="input-field" placeholder="Full Name"
+2161-                                />
+2162-                              </div>
+2163-                              <div>
+2164-                                <label className="label-text">Referer Employee ID</label>
+2165-                                <input 
+2166-                                  type="text" name="refererEmpId" value={formData.refererEmpId} onChange={handleInputChange}
+2167-                                  className="input-field" placeholder="Emp ID"
+2168-                                />
+2169-                              </div>
+2170-                              <div>
+2171-                                <label className="label-text">Referer Branch</label>
+2172-                                <input 
+2173-                                  type="text" name="refererBranch" value={formData.refererBranch} onChange={handleInputChange}
+2174-                                  className="input-field" placeholder="Branch Location"
+2175-                                />
+2176-                              </div>
+2177-                              <div>
+2178-                                <label className="label-text">Referer Mobile</label>
+2179-                                <input 
+2180-                                  type="tel" name="refererMobile" value={formData.refererMobile} onChange={handleInputChange}
+2181-                                  className="input-field" placeholder="Mobile Number"
+2182-                                />
+2183-                              </div>
+2184-                              <div className="sm:col-span-2">
+2185-                                <label className="label-text">Referer Designation</label>
+2186-                                <input 
+2187-                                  type="text" name="refererDesignation" value={formData.refererDesignation} onChange={handleInputChange}
+2188-                                  className="input-field" placeholder="Job Title"
+2189-                                />
+2190-                              </div>
+2191-                            </motion.div>
+2192-                          )}
+2193-
+2194-                          <div className="sm:col-span-2">
+2195-                            <label className="label-text">Resume Portfolio</label>
+2196-                            <div 
+2197-                              onClick={() => fileInputRef.current?.click()}
+2198-                              className="border-2 border-dashed border-white/10 rounded-3xl p-12 text-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-500/5 transition-all group"
+2199-                            >
+2200-                              <input 
+2201-                                type="file" ref={fileInputRef} onChange={handleFileChange}
+2202-                                className="hidden" accept=".pdf,.doc,.docx"
+2203-                              />
+2204-                              <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-indigo-500/10 transition-colors">
+2205-                                <Upload className="w-8 h-8 text-slate-500 group-hover:text-indigo-400" />
+2206-                              </div>
+2207-                              <p className="text-lg font-extrabold text-white">
+2208-                                {viewingResume ? viewingResume.name : (formData.resumePath ? 'Resume Uploaded' : 'Upload Professional Resume')}
+2209-                              </p>
+2210-                              <p className="text-sm text-slate-500 mt-2 font-medium">PDF or DOCX format (Max 10MB)</p>
+2211-                            </div>
+2212-                          </div>
+2213-                        </div>
+2214-                      </motion.div>
+2215-                    )}
+2216-                    {currentStep === 5 && (
+2217-                      <motion.div
+2218-                        key="step5"
+2219-                        initial={{ opacity: 0, y: 10 }}
+2220-                        animate={{ opacity: 1, y: 0 }}
+2221-                        exit={{ opacity: 0, y: -10 }}
+2222-                        className="space-y-8"
+2223-                      >
+2224-                        <h3 className="section-title"><ClipboardCheck className="w-6 h-6 text-indigo-600" /> Interview & Evaluation</h3>
+2225-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+2226-                          <div>
+2227-                            <label className="label-text">Interview Score (0-10)</label>
+2228-                            <input 
+2229-                              type="number" step="0.1" min="0" max="10"
+2230-                              name="interviewScore" value={formData.interviewScore} onChange={handleInputChange}
+2231-                              className="input-field" placeholder="e.g. 8.5"
+2232-                            />
+2233-                          </div>
+2234-                          <div>
+2235-                            <label className="label-text">Candidate Status</label>
+2236-                            <select 
+2237-                              name="status" value={formData.status} onChange={handleInputChange}
+2238-                              required className="input-field"
+2239-                            >
+2240-                              <option value="Applied">Applied</option>
+2241-                              <option value="Screening">Screening</option>
+2242-                              <option value="Interview">Interview</option>
+2243-                              <option value="Offered">Offered</option>
+2244-                              <option value="Rejected">Rejected</option>
+2245-                              <option value="Onboarded">Onboarded</option>
+2246-                            </select>
+2247-                          </div>
+2248-                          <div className="sm:col-span-2">
+2249-                            <label className="label-text">Interview Remarks</label>
+2250-                            <textarea 
+2251-                              name="interviewRemarks" value={formData.interviewRemarks} onChange={handleInputChange}
+2252-                              className="input-field min-h-[120px] resize-none" placeholder="Detailed feedback about the candidate..."
+2253-                            />
+2254-                          </div>
+2255-                        </div>
+2256-                      </motion.div>
+2257-                    )}
+2258-                  </AnimatePresence>
+2259-                </div>
+2260-
+2261-                {/* Footer */}
+2262-                <div className="px-8 sm:px-12 py-8 bg-white/5 border-t border-white/5 flex items-center justify-between">
+2263-                  <button
+2264-                    type="button"
+2265-                    onClick={prevStep}
+2266-                    disabled={currentStep === 0}
+2267-                    className="btn-secondary disabled:opacity-30 disabled:cursor-not-allowed"
+2268-                  >
+2269-                    <ChevronLeft className="w-5 h-5" /> Back
+2270-                  </button>
+2271-
+2272-                  {currentStep === STEPS.length - 1 ? (
+2273-                    <button type="submit" className="btn-primary">
+2274-                      Complete Onboarding <CheckCircle2 className="w-5 h-5" />
+2275-                    </button>
+2276-                  ) : (
+2277-                    <button type="button" onClick={nextStep} className="btn-primary">
+2278-                      Continue <ChevronRight className="w-5 h-5" />
+2279-                    </button>
+2280-                  )}
+2281-                </div>
+2282-              </form>
+2283-            </>
+2284-          ) : (
+2285-            /* Success Screen - Shown after form submission is complete */
+2286-            <motion.div 
+2287-              initial={{ opacity: 0, scale: 0.95 }}
+2288-              animate={{ opacity: 1, scale: 1 }}
+2289-              className="glass-card p-16 text-center"
+2290-            >
+2291-              <div className="w-24 h-24 bg-emerald-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-emerald-900/20">
+2292-                <CheckCircle2 className="w-12 h-12 text-emerald-500" />
+2293-              </div>
+2294-              <h2 className="text-4xl font-black text-white mb-4 tracking-tight">Success!</h2>
+2295-              <p className="text-lg text-slate-400 font-medium mb-12 max-w-md mx-auto">
+2296-                Application for <span className="text-indigo-400 font-bold">{formData.fullName}</span> has been successfully logged into the system.
+2297-              </p>
+2298-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+2299-                <button 
+2300-                  onClick={() => {
+2301-                    setFormData(INITIAL_DATA);
+2302-                    setEditingId(null);
+2303-                    setCurrentStep(0);
+2304-                    setIsSubmitted(false);
+2305-                    setViewingResume(null);
+2306-                    setView('FORM');
+2307-                  }}
+2308-                  className="btn-primary"
+2309-                >
+2310-                  New Application
+2311-                </button>
+2312-                <button 
+2313-                  onClick={() => setView('DASHBOARD')}
+2314-                  className="btn-secondary"
+2315-                >
+2316-                  Back to Dashboard
+2317-                </button>
+2318-              </div>
+2319-            </motion.div>
+2320-          )}
+2321-        </div>
+2322-      </main>
+2323-
+2324-      {/* Resume Viewer Modal - Displays uploaded resumes in an overlay */}
+2325-      <AnimatePresence>
+2326-        {resumeUrl && (
+2327-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8">
+2328-            <motion.div 
+2329-              initial={{ opacity: 0 }}
+2330-              animate={{ opacity: 1 }}
+2331-              exit={{ opacity: 0 }}
+2332-              onClick={() => {
+2333-                setResumeUrl(null);
+2334-              }}
+2335-              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+2336-            />
+2337-            <motion.div 
+2338-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+2339-              animate={{ opacity: 1, scale: 1, y: 0 }}
+2340-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+2341-              className="relative w-full max-w-5xl h-[90vh] bg-[#1a1b1e] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl flex flex-col"
+2342-            >
+2343-              <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/5">
+2344-                <div className="flex items-center gap-4">
+2345-                  <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center">
+2346-                    <FileText className="w-6 h-6 text-indigo-400" />
+2347-                  </div>
+2348-                  <div>
+2349-                    <h3 className="text-lg font-bold text-white leading-tight">{viewingFileName}</h3>
+2350-                    <p className="text-xs text-slate-500 font-medium">
+2351-                      {viewingFileSize > 0 ? `${(viewingFileSize / (1024 * 1024)).toFixed(2)} MB • ` : ''}
+2352-                      {viewingFileType}
+2353-                    </p>
+2354-                  </div>
+2355-                </div>
+2356-                <div className="flex items-center gap-2">
+2357-                  <a 
+2358-                    href={resumeUrl} 
+2359-                    download={viewingFileName}
+2360-                    className="p-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-2xl transition-all"
+2361-                    title="Download Resume"
+2362-                  >
+2363-                    <Download className="w-5 h-5" />
+2364-                  </a>
+2365-                  <button 
+2366-                    onClick={() => {
+2367-                      setResumeUrl(null);
+2368-                    }}
+2369-                    className="p-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-2xl transition-all"
+2370-                  >
+2371-                    <X className="w-5 h-5" />
+2372-                  </button>
+2373-                </div>
+2374-              </div>
+2375-              <div className="flex-1 bg-black/20 p-4 overflow-hidden">
+2376-                {viewingFileType === 'application/pdf' ? (
+2377-                  <div className="w-full h-full flex flex-col items-center justify-center text-center p-12 bg-white/5 rounded-2xl">
+2378-                    <div className="w-20 h-20 bg-indigo-500/10 rounded-3xl flex items-center justify-center mb-6">
+2379-                      <FileText className="w-10 h-10 text-indigo-400" />
+2380-                    </div>
+2381-                    <h4 className="text-xl font-bold text-white mb-2">PDF Preview</h4>
+2382-                    <p className="text-slate-400 max-w-xs mb-8">For security reasons, some browsers block PDF previews in embedded views. Please open the file in a new tab to view it.</p>
+2383-                    <div className="flex gap-4">
+2384-                      <a 
+2385-                        href={resumeUrl} 
+2386-                        target="_blank"
+2387-                        rel="noopener noreferrer"
+2388-                        className="btn-primary"
+2389-                      >
+2390-                        <Eye className="w-5 h-5" /> View in New Tab
+2391-                      </a>
+2392-                      <a 
+2393-                        href={resumeUrl} 
+2394-                        download={viewingFileName}
+2395-                        className="px-6 py-3 bg-white/5 text-white rounded-2xl font-bold hover:bg-white/10 transition-all flex items-center gap-2"
+2396-                      >
+2397-                        <Download className="w-5 h-5" /> Download
+2398-                      </a>
+2399-                    </div>
+2400-                  </div>
+2401-                ) : viewingFileType.startsWith('image/') ? (
+2402-                  <div className="w-full h-full overflow-auto flex items-center justify-center">

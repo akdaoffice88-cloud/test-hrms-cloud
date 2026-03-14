@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-brand-primary: #4f46e5;
+  --color-brand-secondary: #7c3aed;
+  --color-brand-accent: #06b6d4;
+  --color-bg-main: #1e293b;
+  --color-card-bg: #243147;
+  --color-admin: #1e293b;
+  --color-hr: #059669;
+}
+
+@layer base {
+  body {
+    @apply bg-bg-main text-slate-100 font-sans antialiased;
+  }
+}
+
+.glass-card {
+  @apply bg-card-bg/90 backdrop-blur-md border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.2)] rounded-3xl;
+}
+
+.input-field {
+  @apply w-full px-5 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all duration-300 text-slate-100 placeholder:text-slate-500 font-medium;
+}
+
+.label-text {
+  @apply block text-sm font-bold text-slate-400 mb-2 ml-1;
+}
+
+.section-title {
+  @apply text-xl font-extrabold text-white mb-8 flex items-center gap-5;
+}
+
+.btn-primary {
+  @apply px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-900/20 hover:shadow-indigo-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-secondary {
+  @apply px-8 py-3.5 bg-slate-800 text-slate-300 border border-slate-700 rounded-2xl font-bold hover:bg-slate-700 transition-all duration-300 flex items-center justify-center gap-2;
+}
+
+.step-indicator {
+  @apply flex flex-col items-center relative z-10;
+}
+
+.step-circle {
+  @apply w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-lg;
+}
+
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 font-black;
+}
+
+.stat-card {
+  @apply p-6 rounded-3xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all duration-300;
+}
